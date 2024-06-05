@@ -1,19 +1,26 @@
 var express = require('express');
 var router = express.Router();
-const { sysDeptModel } = require('../model/sysDeptModel');
+const { sysDeptModel, valid } = require('../model/sysDeptModel');
 const { randomShortId } = require('../utils/random');
+const { BizResult } = require('../utils/bizResult');
+const { validationResult } = require('express-validator');
 
-router.post('/add', function(req, res, err) {
+router.post('/add', valid, function(req, res, err) {
     var params = req.body;
+    const errors = validationResult(req)
+    console.log('--------------------------');
+    if (!errors.isEmpty()) {
+        console.log(errors.errors[0].msg);
+        const result = BizResult.validateFailedWithMeg(errors.errors[0].msg, null);
+        res.json(result);
+    }
     params.dep_id = randomShortId();
     sysDeptModel.create(params).then(r => {
-        const result = {
-            code: 200,
-            msg: '操作成功'
-          }
-          res.json(result);
+        const result = BizResult.success();
+        res.json(result);
     }).catch(e => {
-        console.log(e);
+        const result = BizResult.fail(e);
+        res.json(result);
     }) 
 })
 

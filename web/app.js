@@ -3,10 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const session = require("express-session");
 
 var indexRouter = require('./routes/index');
 var sysUsersRouter = require('./routes/sysUserRoute');
 var sysDeptRouter = require('./routes/sysDeptRoute');
+var captchaRouter = require('./routes/captchaRoute');
+var expressJwt = require('express-jwt');
+var { signkey } = require('./utils/token')
 
 var app = express();
 
@@ -19,10 +23,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: "WickYo",	// 对cookie进行签名
+  name: "session",	// cookie名称，默认为connect.sid
+  resave: false,	// 强制将会话保存回会话容器
+  rolling: true,	// 强制在每个response上设置会话标识符cookie
+  cookie: {
+      // 5分钟
+     maxAge: 300000
+  }
+}));
+
+app.use(
+  expressJwt.expressjwt({ secret: signkey, algorithms: ["HS256"] }).unless({
+    path: ['/login', '/captcha/captchaImage'],
+  })
+);
 
 app.use('/', indexRouter);
 app.use('/sys_user', sysUsersRouter);
 app.use('/sys_dept', sysDeptRouter);
+app.use('/captcha', captchaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
