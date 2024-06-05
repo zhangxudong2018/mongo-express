@@ -3,7 +3,7 @@
  * @Author: zhangxudong
  * @version: 
  * @Date: 2024-06-04 21:40:50
- * @LastEditTime: 2024-06-04 22:23:41
+ * @LastEditTime: 2024-06-04 23:21:12
 -->
 <template>
     <el-form v-model="form" label-width="auto" style="max-width: 600px">
@@ -72,10 +72,11 @@
 </template>
 
 <script>
-import { reactive, toRefs } from 'vue'
+import { reactive, toRefs, getCurrentInstance } from 'vue'
 
 export default {
     setup() {
+        const { proxy } = getCurrentInstance()
         const form = reactive({
             name: '',
             region: '',
@@ -87,8 +88,10 @@ export default {
             desc: '',
         })
 
-        const onSubmit = () => {
-            console.log(form)
+        const onSubmit = async() => {
+            const res = await new proxy.$request(proxy.$urls.m().register, form).modepost();
+            console.log(res)
+            
         }
 
         return {
