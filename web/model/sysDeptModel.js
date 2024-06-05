@@ -1,5 +1,5 @@
 const mongoose = require('../db/db');
-
+const { body, validationResult } = require('express-validator');
 
 const sysDeptSchema = new mongoose.Schema({
     dep_id: {
@@ -58,4 +58,15 @@ const sysDeptSchema = new mongoose.Schema({
 });
 
 const sysDeptModel = mongoose.model('sys_dept', sysDeptSchema, "sys_dept");
-module.exports = { sysDeptModel };
+
+const valid = [
+    body('parent_id').notEmpty().withMessage('parent_id不能为空'),
+    body('dept_name').notEmpty().withMessage('dept_name不能为空'),
+    body('order_num').notEmpty().withMessage('order_num不能为空'),
+    body('leader').notEmpty().withMessage('leader不能为空'),
+    body('phone').notEmpty().withMessage('phone不能为空'),
+    body('email').notEmpty().withMessage('email不能为空'),
+    body('status').notEmpty().withMessage('status不能为空')
+];
+
+module.exports = { sysDeptModel, valid };
