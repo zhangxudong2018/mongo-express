@@ -6,7 +6,7 @@
  * @LastEditTime: 2024-06-04 23:21:12
 -->
 <template>
-    <el-form v-model="form" label-width="auto" style="max-width: 600px">
+  <el-form v-model="form" label-width="auto" style="max-width: 600px">
     <el-form-item label="Activity name">
       <el-input v-model="form.name" />
     </el-form-item>
@@ -72,33 +72,40 @@
 </template>
 
 <script>
-import { reactive, toRefs, getCurrentInstance } from 'vue'
+import { reactive, toRefs, getCurrentInstance, onBeforeMount } from "vue";
+import { getCaptchaImg } from "../../../api/api.js";
 
 export default {
-    setup() {
-        const { proxy } = getCurrentInstance()
-        const form = reactive({
-            name: '',
-            region: '',
-            date1: '',
-            date2: '',
-            delivery: false,
-            type: [],
-            resource: '',
-            desc: '',
-        })
-
-        const onSubmit = async() => {
-            const res = await new proxy.$request(proxy.$urls.m().register, form).modepost();
-            console.log(res)
-            
-        }
-
-        return {
-            form,
-            // ...toRefs(form),
-            onSubmit
-        }
+  setup() {
+    const { proxy } = getCurrentInstance();
+    const data = reactive({
+      form: {
+        username: "",
+        password: "",
+        code: "",
+        uuid: "",
+      },
+    });
+    const method = {
+      async getCaptchaImg() {
+        let res = await getCaptchaImg()
+        console.log(res)
+      }
     }
-}
+    onBeforeMount(() => {
+      console.log("onBeforeMount")
+      console.log(method.getCaptchaImg)
+      // proxy.$http.getCaptchaImg().then(res => {
+      //   console.log(res)
+      // })
+      // method.getCaptchaImg()
+      // method.getCaptchaImg()
+    })
+    return {
+      ...data,
+      // ...toRefs(form),
+      ...method,
+    };
+  },
+};
 </script>

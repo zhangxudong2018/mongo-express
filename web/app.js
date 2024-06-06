@@ -4,13 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require("express-session");
+const cors = require('cors');
 
 var indexRouter = require('./routes/index');
-var sysUsersRouter = require('./routes/sysUserRoute');
-var sysDeptRouter = require('./routes/sysDeptRoute');
-var captchaRouter = require('./routes/captchaRoute');
-var expressJwt = require('express-jwt');
-var { signkey } = require('./utils/token')
 
 var app = express();
 
@@ -33,17 +29,9 @@ app.use(session({
      maxAge: 300000
   }
 }));
-
-app.use(
-  expressJwt.expressjwt({ secret: signkey, algorithms: ["HS256"] }).unless({
-    path: ['/login', '/captcha/captchaImage'],
-  })
-);
+app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/sys_user', sysUsersRouter);
-app.use('/sys_dept', sysDeptRouter);
-app.use('/captcha', captchaRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

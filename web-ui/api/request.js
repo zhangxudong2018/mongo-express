@@ -2,40 +2,47 @@
  * @Descripttion: 
  * @Author: zhangxudong
  * @version: 
- * @Date: 2024-06-04 22:37:21
- * @LastEditTime: 2024-06-04 23:35:03
+ * @Date: 2024-06-04 22:41:28
+ * @LastEditTime: 2024-06-04 22:58:21
  */
-import instance from "./header.js"
+import axios from "axios"
+import { ElMessageBox } from "element-plus"
 
-const request = class {
-    constructor(url, arg) {
-        this.url = url;
-        this.arg = arg;
+const url = 'http://localhost:3000';
+
+let instance = axios.create({
+    baseURL: url,
+    timeout: 5000,
+    responseType: "json",
+    headers: {
+        "Content-Type": "application/json;charset=utf-8"
     }
+})
 
-    modepost() {
-        return new Promise((resolve, reject) =>{
-            instance.post(this.url, this.arg)
-            .then(res => {
-                resolve(res);
-            })
-            .catch(err => {
-                reject(err);
-            });
-        })
+instance.interceptors.request.use(
+    config => {
+        let token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = token;
+        }
+        return config;
+    },
+    error => {
+        return Promise.reject(error);
     }
+)
 
-    modeget() {
-        return new Promise((resolve, reject) =>{
-            instance.get(this.url)
-            .then(res => {
-                resolve(res);
-            })
-            .catch(err => {
-                reject(err);
-            });
-        })
+instance.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        if (error.response) {
+            let code = error.response.code;
+            let msg = error.response.msg;
+        }
+        return Promise.reject(error, response.data);
     }
-}
+)
 
-export default request;
+export default instance;
