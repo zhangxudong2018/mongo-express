@@ -1,21 +1,15 @@
-<!--
- * @Descripttion: 
- * @Author: zhangxudong
- * @version: 
- * @Date: 2024-06-04 21:30:46
- * @LastEditTime: 2024-06-04 21:49:03
--->
 <template>
-  <router-view/>
+  <router-view />
 </template>
 
-<script>
+<script setup>
+import useSettingsStore from '@/store/modules/settings'
+import { handleThemeStyle } from '@/utils/theme'
 
-export default {
-  name: 'App'
-}
+onMounted(() => {
+  nextTick(() => {
+    // 初始化主题样式
+    handleThemeStyle(useSettingsStore().theme)
+  })
+})
 </script>
-
-<style>
-
-</style>
