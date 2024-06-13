@@ -1,10 +1,13 @@
 const mongoose = require('../db/db');
 const bcrypt = require('bcrypt');
-const { randomSalt } = require('../utils/random');
+const { body } = require('express-validator');
 
 const sysUserSchema = new mongoose.Schema({
+    user_id: {
+        type: String
+    },
     dept_id: {
-        type: Number,
+        type: String
     },
     login_name: {
         type: String
@@ -78,4 +81,15 @@ const sysUserSchema = new mongoose.Schema({
 });
 
 const sysUserModel = mongoose.model('sys_user', sysUserSchema, "sys_user");
+
+const valid = [
+    body('parent_id').notEmpty().withMessage('parent_id不能为空'),
+    body('dept_name').notEmpty().withMessage('dept_name不能为空'),
+    body('order_num').notEmpty().withMessage('order_num不能为空'),
+    body('leader').notEmpty().withMessage('leader不能为空'),
+    body('phone').notEmpty().withMessage('phone不能为空'),
+    body('email').notEmpty().withMessage('email不能为空'),
+    body('status').notEmpty().withMessage('status不能为空')
+];
+
 module.exports = { sysUserModel };

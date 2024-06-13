@@ -12,11 +12,15 @@ const { jwtAuth} = require('../utils/token');
 const loginRoute = require('./loginRoute');
 const captchaRoute = require('./captchaRoute');
 const sysDeptRoute = require('./sysDeptRoute');
+const sysUserRoute = require('./sysUserRoute');
+const sysPostRoute = require('./sysPostRoute');
 
 router.use(jwtAuth);
 router.use('/', loginRoute);
 router.use('/captcha', captchaRoute);
 router.use('/sys_dept', sysDeptRoute);
+router.use('/sys_user', sysUserRoute);
+router.use('/sys_post', sysPostRoute);
 
 //设置跨域访问
 // router.all('*', function(req, res, next) {

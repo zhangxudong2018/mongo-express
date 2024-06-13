@@ -1,5 +1,5 @@
 const mongoose = require('../db/db');
-const { body, validationResult } = require('express-validator');
+const { body } = require('express-validator');
 
 const sysDeptSchema = new mongoose.Schema({
     dep_id: {

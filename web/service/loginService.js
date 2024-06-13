@@ -3,6 +3,7 @@ const { BizResult } = require('../utils/bizResult');
 
 function login(req, res) {
     const param = req.body;
+    console.log(param);
     setToken(param.username, param.password, param.code, param.uuid)
     .then(r => {
         const result = BizResult.success(r);
